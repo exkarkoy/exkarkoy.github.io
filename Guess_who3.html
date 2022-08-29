@@ -31,55 +31,122 @@
 	.card.is-flipped {
   		transform: rotateY(180deg);
 	}
+
+        td.board_col { 
+		width: 128px;
+        }
+
+	tr.board_row {
+		height: 218px;
+		vertical-align: top; 
+	}
+	.button {
+ 	 background-color: #4CAF50; /* Green */
+	  border: none;
+	  color: white;
+	  padding: 15px 32px;
+		  text-align: center;
+	  text-decoration: none;
+	  display: inline-block;
+	  font-size: 16px;
+	}
 	</style>
   </head>
   <body>
+<table><tr><td>
+<table border=3>
+<Tr class="board_row">
+<td class="board_col">
+  		<button class="card"  onclick=this.classList.toggle('is-flipped');>
+    		<div class="card__face card__face--front"><img src="face\face11.jpg" /></div>
+    		<div class="card__face card__face--back"><img src="face\face00.jpg" /></div>
+  		</button>
+</td>
+<td  class="board_col">
+  		<button class="card"  onclick=this.classList.toggle('is-flipped');>
+    		<div class="card__face card__face--front"><img src="face\face12.jpg" /></div>
+    		<div class="card__face card__face--back"><img src="face\face00.jpg" /></div>
+  		</button>
+</td>
+<td  class="board_col">
+  		<button class="card"  onclick=this.classList.toggle('is-flipped');>
+    		<div class="card__face card__face--front"><img src="face\face13.jpg" /></div>
+    		<div class="card__face card__face--back"><img src="face\face00.jpg" /></div>
+  		</button>
+</td>
+<td  class="board_col">
+  		<button class="card"  onclick=this.classList.toggle('is-flipped');>
+    		<div class="card__face card__face--front"><img src="face\face14.jpg" /></div>
+    		<div class="card__face card__face--back"><img src="face\face00.jpg" /></div>
+  		</button>
+</td>
+<td  class="board_col">
+  		<button class="card"  onclick=this.classList.toggle('is-flipped');>
+    		<div class="card__face card__face--front"><img src="face\face15.jpg" /></div>
+    		<div class="card__face card__face--back"><img src="face\face00.jpg" /></div>
+  		</button>
+</td>
+<td  class="board_col">
+  		<button class="card"  onclick=this.classList.toggle('is-flipped');>
+    		<div class="card__face card__face--front"><img src="face\face16.jpg" /></div>
+    		<div class="card__face card__face--back"><img src="face\face00.jpg" /></div>
+  		</button>
+</td>
+<td  class="board_col">
+  		<button class="card"  onclick=this.classList.toggle('is-flipped');>
+    		<div class="card__face card__face--front"><img src="face\face17.jpg" /></div>
+    		<div class="card__face card__face--back"><img src="face\face00.jpg" /></div>
+  		</button>
+</td>
+<td  class="board_col">
+  		<button class="card"  onclick=this.classList.toggle('is-flipped');>
+    		<div class="card__face card__face--front"><img src="face\face18.jpg" /></div>
+    		<div class="card__face card__face--back"><img src="face\face00.jpg" /></div>
+  		</button>
+</td>
+</tr>
+<TR class="board_row">
+<td>
+  		<button class="card" onclick=this.classList.toggle('is-flipped');>
+    		<div class="card__face card__face--front"><img src="face\face21.jpg" /></div>
+    		<div class="card__face card__face--back"><img src="face\face00.jpg" /></div>
+  		</button>
+</td>
+<td>
+  		<button class="card"   onclick=this.classList.toggle('is-flipped');>
+    		<div class="card__face card__face--front"><img src="face\face22.jpg" /></div>
+    		<div class="card__face card__face--back"><img src="face\face00.jpg" /></div>
+  		</button>
+</td>
+</tr>
+</table>
+
+</td><td style="width:20px; padding:10px"></td><td>
 <table ><tr>
 I am: 
 </tr>
 <tr>
-<div><img id="my_img" src="face00.jpg" /></div>
+<div><img id="my_img" src="face\face00.jpg" /></div>
+<div><button onclick=setMyImg();>Change face!</button></div>
+</tr>
+</table>
+</td></tr></table>
+
 <script>
-ellipse(140,55,100,100);
-var elem = document.getElementById("my_img");
-var numRow = 2;
-var numCol = 2;
-var num1 = Math.floor(Math.random() * numRow) + 1;
-var num2 = Math.floor(Math.random() * numCol) + 1
-elem.src = "face" + num1 + num2 + ".jpg" //set the source
+function setMyImg()
+{
+	var elem = document.getElementById("my_img");
+	var numRow = 3;
+	var numCol = 8;
+	var num1 = Math.floor(Math.random() * numRow) + 1;
+	var num2 = Math.floor(Math.random() * numCol) + 1;
+	elem.src = "face\\face" + num1 + num2 + ".jpg" //set the source
+}
+
+setMyImg();
+
 </script>
-</tr>
-</table>
-<table >
-<Tr height=150>
-<td width=100 align=center>
-  		<button class="card" id="card11" onclick=this.classList.toggle('is-flipped');>
-    		<div class="card__face card__face--front"><img src="face11.jpg" /></div>
-    		<div class="card__face card__face--back"><img src="face00.jpg" /></div>
-  		</button>
-</td>
-<td width=100 align=center>
-  		<button class="card" id="card12" onclick=this.classList.toggle('is-flipped');>
-    		<div class="card__face card__face--front"><img src="face12.jpg" /></div>
-    		<div class="card__face card__face--back"><img src="face00.jpg" /></div>
-  		</button>
-</td>
-</tr>
-<TR  height=150>
-<td width=100 align=center>
-  		<button class="card" id="card21" onclick=this.classList.toggle('is-flipped');>
-    		<div class="card__face card__face--front"><img src="face21.jpg" /></div>
-    		<div class="card__face card__face--back"><img src="face00.jpg" /></div>
-  		</button>
-</td>
-<td width=100 align=center>
-  		<button class="card" id="card22" onclick=this.classList.toggle('is-flipped');>
-    		<div class="card__face card__face--front"><img src="face22.jpg" /></div>
-    		<div class="card__face card__face--back"><img src="face00.jpg" /></div>
-  		</button>
-</td>
-</tr>
-</table>
+
 
   </body>
 </html>
