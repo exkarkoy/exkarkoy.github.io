@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html>
+<head>  
+
+    <style>
+      .answer{
+        outline-width: 0.01 cm;
+      }
+      .result{
+        color: black;
+        font-size:15;
+        font-family: Arial, Helvetica, sans-serif;
+      }
+    </style>
+    <meta charset="UTF-8" />
+    <title>Multiplication Tables</title>
+</head>
+<body>
+<p>Welcome to Multiplication Tables! <br></p> 
+<!---
+<p>Select the numbers to practice</p>   
+<input class = "numbers" type="radio" value="1" >1
+<input class = "numbers" type="radio" value="2" >2
+<input class = "numbers" type="radio" value="3" >3
+<input class = "numbers" type="radio" value="4" >4
+<input class = "numbers" type="radio" value="5" >5
+<input class = "numbers" type="radio" value="6" >6
+<input class = "numbers" type="radio" value="7" >7
+<input class = "numbers" type="radio" value="8" >8
+<input class = "numbers" type="radio" value="9" >9
+<input class = "numbers" type="radio" value="10" >10
+<input class = "numbers" type="radio" value="11" >11
+<input class = "numbers" type="radio" value="12" >12 <br>
+<p>select the mode</p> <br>
+<input id = "mode" type="radio" value="by time" >By time
+<input id = "mode" type="radio" value="by question" >By question
+<input id = "mode" type="radio" value="by both" >By both
+<button id="start" onclick="start()">Start</button>
+<script>
+let selectedValues = [];
+
+radioButtons.forEach(function(radioButton) {
+    if (radioButton.checked) {
+        selectedValues.push(radioButton.value);
+    }
+});
+    if (mode === "by time"); {
+        var secs = prompt("Enter the time limit in seconds");
+        var time = secs * 1000;}
+    elif(mode === "by question"); {
+        var questions = prompt("Enter the number of questions");
+    }
+    elif (mode === "by both"); {
+        var secs = prompt("Enter the time limit in seconds");
+        var time = secs * 1000;
+        var questions = prompt("Enter the number of questions");
+    }
+    function TimesUP(){
+        alert("Time's up");}
+    function start() {
+      if (mode === "by time") {
+        setTimeout(TimesUP, time);
+      }
+      else if (mode === "by question") {
+        //lorem ipsum dolor sit amet. consectetur adipiscing elit.
+      }
+      else {
+        setTimeout(TimesUP, time);
+        lorem ipsum dolor sit amet. consectetur adipiscing elit.
+      }}
+</script>
+-->
+<script>
+var numbers = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];  
+/*
+var q1v1 = numbers[Math.floor(Math.random() * numbers.length)];
+var q1v2 = numbers[Math.floor(Math.random() * numbers.length)];
+var q2v1 = numbers[Math.floor(Math.random() * numbers.length)];
+var q2v2 = numbers[Math.floor(Math.random() * numbers.length)];
+var q3v1 = numbers[Math.floor(Math.random() * numbers.length)];
+var q3v2 = numbers[Math.floor(Math.random() * numbers.length)];
+*/
+const NumQue = 10;
+var QV1 = new Array(NumQue);
+var QV2 = new Array(NumQue);
+document.addEventListener('keydown', function(event) {
+  if (event.key === 'Enter') {
+    // Enter key is pressed
+    event.preventDefault();
+
+    const inputs = document.getElementsByTagName('input');
+    const index = Array.from(inputs).indexOf(document.activeElement);
+
+    if (index < inputs.length - 1) {
+      inputs[index + 1].focus();
+    }
+  }
+});
+function startOld() {
+    var q1 = q1v1 + " x " + q1v2 + " = ";
+    var q2 = q2v1 + " x " + q2v2 + " = ";
+    var q3 = q3v1 + " x " + q3v2 + " = ";
+
+    document.getElementById('question1').innerHTML = q1;
+    document.getElementById('question2').innerHTML = q2;
+    document.getElementById('question3').innerHTML = q3;
+
+}
+var timeSpent = 0
+function timer() {
+  timeSpent ++ ;
+}
+function start() {
+  
+  //secset = Interval(timer, 1000);
+  for (i = 0; i < NumQue; i++) { 
+    document.getElementById('answer'+(i+1)).value= '';
+    document.getElementById('result'+(i+1)).innerHTML = '';
+    document.getElementById('result'+(i+1)).style.backgroundColor = "Grey";
+    QV1[i] = numbers[Math.floor(Math.random() * numbers.length)];
+    QV2[i] = numbers[Math.floor(Math.random() * numbers.length)];
+    document.getElementById('question'+(i+1)).innerHTML = QV1[i] + " x " + QV2[i] + " = ";
+  }
+}
+function check(QV1, QV2) {
+ //clearInterval(secset)
+  for ( a=0; a < NumQue; a++) {
+    var userAnswer = document.getElementById('answer'+(a+1)).value;
+    
+    if (parseInt(userAnswer) === QV1[a] * QV2[a]) {
+      document.getElementById('result'+(a+1)).innerHTML = "Correct";
+      document.getElementById('result'+(a+1)).style.backgroundColor = "Green";
+  }
+  else {
+    document.getElementById('result'+(a+1)).innerHTML = "Incorrect";
+    document.getElementById('result'+(a+1)).style.backgroundColor = "Red";
+  }
+}
+}
+
+</script>
+<button id="start" onclick="start()">Start</button>
+<table>
+  <tr>
+    <th>Number</th>
+    <th>Question</th>
+    <th>Answer</th>
+    <th>Result</th>
+  </tr>
+  <tr>
+    <td>1</td>
+    <td class = "question" id = "question1"></td>
+    <td><input class = "answer" id = "answer1" type="text"></input></td>
+    <td class = "result" id = "result1"></td>
+  </tr>
+  <tr>
+    <td>2</td>
+    <td class = "question" id = "question2"></td>
+    <td><input class = "answer" id = "answer2" type="text"></input></td>
+    <td class = "result" id = "result2"></td>
+  </tr>
+  <tr>
+    <td>3</td>
+    <td class = "question" id = "question3"></td>
+    <td><input class = "answer" id = "answer3" type="text"></input></td>
+    <td class = "result" id = "result3"></td>
+  </tr>
+</table>
+<button id="btn_check" onclick="check(QV1, QV2)">Check</button>
+
+</body>
+</html>
