@@ -3,13 +3,33 @@
 <head>  
 
     <style>
+      
       .answer{
         outline-width: 0.01 cm;
       }
       .result{
+      background-color: rgb(51, 51, 51);
         color: black;
         font-size:15;
         font-family: Arial, Helvetica, sans-serif;
+      }
+      #secs {
+        font-size: 30;
+        color: black;
+        font-family: Arial, Helvetica, sans-serif;
+        font-weight: bold;
+
+      }
+      #btn_check {
+        width:200px; 
+        padding:2px;
+        border:1px;
+        margin:1px;
+        font-size: 30;
+        color: black;
+        font-family: Arial, Helvetica, sans-serif;
+        font-weight: bold;
+        background-color: rgb(0, 255, 0);
       }
     </style>
     <meta charset="UTF-8" />
@@ -17,6 +37,7 @@
 </head>
 <body>
 <p>Welcome to Multiplication Tables! <br></p> 
+<p>How many questions would you like?</p><input type = "text" id = "NofQues" value="3"></input>
 <!---
 <p>Select the numbers to practice</p>   
 <input class = "numbers" type="radio" value="1" >1
@@ -66,11 +87,35 @@ radioButtons.forEach(function(radioButton) {
       }
       else {
         setTimeout(TimesUP, time);
-        lorem ipsum dolor sit amet. consectetur adipiscing elit.
+        //lorem ipsum dolor sit amet. consectetur adipiscing elit.
       }}
 </script>
 -->
 <script>
+  var NumQue;
+  if (document.getElementById('NofQues') == null){
+    alert("Please input a number, then press start");
+  }
+  else{
+    NumQue = parseInt(document.getElementById('NofQues').value);
+ 
+}
+
+function addRow(nRow) {
+
+var tableQ = document.getElementById("table");
+var row = tableQ.insertRow(-1); // Insert a row at the last position
+//insert cells into the row.
+var cell1 = row.insertCell(0);
+var cell2 = row.insertCell(1);
+var cell3 = row.insertCell(2);
+var cell4 = row.insertCell(3);
+//insert content into the cells.
+cell1.innerHTML = nRow;
+cell2.innerHTML = '<div id="question' + (nRow) + '" class="question"></div>';
+cell3.innerHTML = '<input class="answer" id="answer' + (nRow) + '" type="number"></input>';
+cell4.innerHTML = '<div id="result' + (nRow) + '" class="result"></div>';
+}
 var numbers = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];  
 /*
 var q1v1 = numbers[Math.floor(Math.random() * numbers.length)];
@@ -80,9 +125,10 @@ var q2v2 = numbers[Math.floor(Math.random() * numbers.length)];
 var q3v1 = numbers[Math.floor(Math.random() * numbers.length)];
 var q3v2 = numbers[Math.floor(Math.random() * numbers.length)];
 */
-const NumQue = 10;
-var QV1 = new Array(NumQue);
-var QV2 = new Array(NumQue);
+
+var QV1;
+var QV2;
+var secSet;
 document.addEventListener('keydown', function(event) {
   if (event.key === 'Enter') {
     // Enter key is pressed
@@ -106,67 +152,72 @@ function startOld() {
     document.getElementById('question3').innerHTML = q3;
 
 }
-var timeSpent = 0
+var timeSpent = 0;
 function timer() {
-  timeSpent ++ ;
+  timeSpent ++;
+  var timeText = "Time : " + timeSpent /10;
+  document.getElementById("secs").innerHTML = timeText;
+  
 }
 function start() {
-  
-  //secset = Interval(timer, 1000);
+  NumQue = parseInt(document.getElementById('NofQues').value);
+  QV1 = new Array(NumQue);
+  QV2 = new Array(NumQue);
+  const button = document.getElementById("start");
+  button.disabled = true;
+  var d=0;
+  for (d = 1; d < NumQue + 1; d++)
+    addRow(d);
+
+  secSet = setInterval(timer, 100);
   for (i = 0; i < NumQue; i++) { 
     document.getElementById('answer'+(i+1)).value= '';
     document.getElementById('result'+(i+1)).innerHTML = '';
-    document.getElementById('result'+(i+1)).style.backgroundColor = "Grey";
+    document.getElementById('result'+(i+1)).style.backgroundColor = "grey";
     QV1[i] = numbers[Math.floor(Math.random() * numbers.length)];
     QV2[i] = numbers[Math.floor(Math.random() * numbers.length)];
     document.getElementById('question'+(i+1)).innerHTML = QV1[i] + " x " + QV2[i] + " = ";
   }
 }
-function check(QV1, QV2) {
- //clearInterval(secset)
-  for ( a=0; a < NumQue; a++) {
-    var userAnswer = document.getElementById('answer'+(a+1)).value;
+function check(QV1, QV2, secSet) {
+  clearInterval(secSet);
+  var input;
+  var ItemsCorrect = 0;
+  var userAnswer;
+  var isValidNumber;
+  
+  for (let i = 0; i < NumQue; i++) {
+    userAnswer = document.getElementById('answer' + (i + 1)).value;
+    isValidNumber = !isNaN(parseInt(userAnswer));
+    input = document.getElementById('answer' + (i + 1));
+    //input.disabled = true;
     
-    if (parseInt(userAnswer) === QV1[a] * QV2[a]) {
-      document.getElementById('result'+(a+1)).innerHTML = "Correct";
-      document.getElementById('result'+(a+1)).style.backgroundColor = "Green";
+    if (isValidNumber && parseInt(userAnswer) == parseInt(QV1[i] * QV2[i])) {
+      document.getElementById('result' + (i + 1)).innerHTML = "Correct";
+      document.getElementById('result' + (i + 1)).style.backgroundColor = "Green";
+      ItemsCorrect++;
+    } 
+    else {
+      document.getElementById('result' + (i + 1)).innerHTML = "Incorrect";
+      document.getElementById('result' + (i + 1)).style.backgroundColor = "Red";
+    }
   }
-  else {
-    document.getElementById('result'+(a+1)).innerHTML = "Incorrect";
-    document.getElementById('result'+(a+1)).style.backgroundColor = "Red";
-  }
-}
+  document.getElementById('Results').innerHTML = "You got " + ItemsCorrect + " out of " + NumQue + " correct";
 }
 
 </script>
-<button id="start" onclick="start()">Start</button>
-<table>
+<button id="start" onclick="start()">Start</button><br>
+<p id = "secs"></p>
+<p id = "Results"></p>
+<table id = "table">
   <tr>
     <th>Number</th>
     <th>Question</th>
     <th>Answer</th>
     <th>Result</th>
   </tr>
-  <tr>
-    <td>1</td>
-    <td class = "question" id = "question1"></td>
-    <td><input class = "answer" id = "answer1" type="text"></input></td>
-    <td class = "result" id = "result1"></td>
-  </tr>
-  <tr>
-    <td>2</td>
-    <td class = "question" id = "question2"></td>
-    <td><input class = "answer" id = "answer2" type="text"></input></td>
-    <td class = "result" id = "result2"></td>
-  </tr>
-  <tr>
-    <td>3</td>
-    <td class = "question" id = "question3"></td>
-    <td><input class = "answer" id = "answer3" type="text"></input></td>
-    <td class = "result" id = "result3"></td>
-  </tr>
 </table>
-<button id="btn_check" onclick="check(QV1, QV2)">Check</button>
+<button id="btn_check" onclick="check(QV1, QV2, secSet)" >Check</button>
 
 </body>
 </html>
