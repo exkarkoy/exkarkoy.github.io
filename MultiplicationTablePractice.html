@@ -3,7 +3,16 @@
 <head>  
 
     <style>
-      
+      * { font-family: Arial, Helvetica, sans-serif; }
+
+      h1 { color: rgb(51,0,151)}
+
+      button {
+        width:100px; 
+        font-weight: bold;
+        background-color: rgb(0,160,230);
+      }
+
       .answer{
         outline-width: 0.01 cm;
       }
@@ -13,6 +22,9 @@
         font-size:15;
         font-family: Arial, Helvetica, sans-serif;
       }
+
+      
+      
       #secs {
         font-size: 30;
         color: black;
@@ -36,8 +48,8 @@
     <title>Multiplication Tables</title>
 </head>
 <body>
-<p>Welcome to Multiplication Tables! <br></p> 
-<p>How many questions would you like?</p><input type = "text" id = "NofQues" value="3"></input>
+  <h1>Welcome to Multiplication Tables! <br></h1> 
+  <p>How many questions would you like?</p><input type = "text" id = "NofQues" value="3"></input>
 <!---
 <p>Select the numbers to practice</p>   
 <input class = "numbers" type="radio" value="1" >1
@@ -116,7 +128,8 @@ cell2.innerHTML = '<div id="question' + (nRow) + '" class="question"></div>';
 cell3.innerHTML = '<input class="answer" id="answer' + (nRow) + '" type="number"></input>';
 cell4.innerHTML = '<div id="result' + (nRow) + '" class="result"></div>';
 }
-var numbers = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];  
+var numbers = [ 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];  
+//var numbers = [ 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12,13,14,15,16,17,18,19,20];  
 /*
 var q1v1 = numbers[Math.floor(Math.random() * numbers.length)];
 var q1v2 = numbers[Math.floor(Math.random() * numbers.length)];
@@ -129,29 +142,25 @@ var q3v2 = numbers[Math.floor(Math.random() * numbers.length)];
 var QV1;
 var QV2;
 var secSet;
+
 document.addEventListener('keydown', function(event) {
+
   if (event.key === 'Enter') {
     // Enter key is pressed
-    event.preventDefault();
-
+ 
     const inputs = document.getElementsByTagName('input');
     const index = Array.from(inputs).indexOf(document.activeElement);
 
     if (index < inputs.length - 1) {
+      event.preventDefault();
+
       inputs[index + 1].focus();
     }
+   else document.getElementById('btn_check').onclick();
+   
   }
 });
-function startOld() {
-    var q1 = q1v1 + " x " + q1v2 + " = ";
-    var q2 = q2v1 + " x " + q2v2 + " = ";
-    var q3 = q3v1 + " x " + q3v2 + " = ";
 
-    document.getElementById('question1').innerHTML = q1;
-    document.getElementById('question2').innerHTML = q2;
-    document.getElementById('question3').innerHTML = q3;
-
-}
 var timeSpent = 0;
 function timer() {
   timeSpent ++;
@@ -169,7 +178,10 @@ function start() {
   for (d = 1; d < NumQue + 1; d++)
     addRow(d);
 
-  secSet = setInterval(timer, 100);
+  //Set focus on first text box
+    document.getElementById('answer1').focus();
+
+    secSet = setInterval(timer, 100);
   for (i = 0; i < NumQue; i++) { 
     document.getElementById('answer'+(i+1)).value= '';
     document.getElementById('result'+(i+1)).innerHTML = '';
@@ -179,6 +191,25 @@ function start() {
     document.getElementById('question'+(i+1)).innerHTML = QV1[i] + " x " + QV2[i] + " = ";
   }
 }
+function retry() {
+  document.getElementById('Results').innerHTML = "";
+  //Set focus on first text box
+  document.getElementById('answer1').focus();
+  timeSpent = 0;
+  document.getElementById('secs').innerHTML = "Time : 0";
+  secSet = setInterval(timer, 100);
+  for (let i = 0; i < NumQue; i++) { 
+    document.getElementById('answer'+(i+1)).value= '';
+    document.getElementById('result'+(i+1)).innerHTML = '';
+    document.getElementById('result'+(i+1)).style.backgroundColor = "grey";
+    QV1[i] = numbers[Math.floor(Math.random() * numbers.length)];
+    QV2[i] = numbers[Math.floor(Math.random() * numbers.length)];
+    document.getElementById('question'+(i+1)).innerHTML = QV1[i] + " x " + QV2[i] + " = ";
+  }
+
+}
+var numRound = 0;
+var prevScores = "  ";
 function check(QV1, QV2, secSet) {
   clearInterval(secSet);
   var input;
@@ -203,10 +234,18 @@ function check(QV1, QV2, secSet) {
     }
   }
   document.getElementById('Results').innerHTML = "You got " + ItemsCorrect + " out of " + NumQue + " correct";
+
+  //Edit result history
+  numRound++;
+  document.getElementById('scoreboard').innerHTML = numRound + ".  " + ItemsCorrect + "/" + NumQue + " | " + timeSpent/10 + " seconds" + "<BR>" + prevScores;
+  prevScores = document.getElementById('scoreboard').innerHTML;
+
 }
 
 </script>
-<button id="start" onclick="start()">Start</button><br>
+
+<button id="start" onclick="start()">Start</button> 
+<button id="retry" onclick="retry()">Retry</button><br>
 <p id = "secs"></p>
 <p id = "Results"></p>
 <table id = "table">
@@ -218,6 +257,8 @@ function check(QV1, QV2, secSet) {
   </tr>
 </table>
 <button id="btn_check" onclick="check(QV1, QV2, secSet)" >Check</button>
+
+<p id="scoreboard"></p>
 
 </body>
 </html>
