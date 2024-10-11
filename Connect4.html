@@ -1,0 +1,124 @@
+<html>
+<head>
+<style>
+body{
+  --circle_diameter: 100px; }
+    .grid {
+  display: flex;
+
+}
+
+.column {
+  display: flex;
+  flex-direction: column;
+  background-color:rgb(0, 155, 255)
+}
+
+.circle {   
+  width: var(--circle_diameter); /* diameter */
+  height: var(--circle_diameter);
+  border-radius: 50%;
+  background-color: gray;
+  margin: calc(var(--circle_diameter)/10);
+}
+#refresh {
+  width: 110px;
+  height: 80px;
+  border-radius: 50%;
+  margin: auto;
+  margin-top: 15px;
+  font-family: Arial, sans-serif;
+  font-size: 20px;
+  font-weight: bold;
+  background-color: rgb(255, 0, 0);
+  text-align: center;
+  vertical-align: middle;
+}
+</style>
+<script>
+var MoveCounter = 0;
+var arrColumn = [ 36, 37, 38, 39, 40, 41, 42];
+function claim(column){
+  console.log("claim() function called with column =", column);
+  var PersonalTag;
+    var slot = document.getElementById("circle-" + arrColumn[column - 1]);
+    if (MoveCounter % 2 == 0) {
+      slot.style.backgroundColor = "yellow";
+    }
+    else{
+      slot.style.backgroundColor = "red";
+    }
+      arrColumn[column - 1] -=7;
+      MoveCounter ++;
+    }
+  
+  
+</script>
+<meta charset="utf-8">
+<title>Connect 4 </title>
+</head>
+<body>
+<h1>Connect 4 </h1>
+<p>Click to place a circle - Sorry I haven't added a "You Won" alert</p>
+<div id="refresh" onclick="location.reload()">Click to refresh</div>
+<div class="grid">
+    <!-- 7 columns, 6 rows -->
+    <div class="column" id="column-1" onclick="claim(1)">
+      <div class="circle column-1" id="circle-1"></div>
+      <div class="circle column-1" id="circle-8"></div>
+      <div class="circle column-1" id="circle-15"></div>
+      <div class="circle column-1" id="circle-22"></div>
+      <div class="circle column-1" id="circle-29"></div>
+      <div class="circle column-1" id="circle-36"></div>
+    </div>
+    <div class="column" id="column-2" onclick=claim(2)>
+      <div class="circle column-2" id="circle-2"></div>
+      <div class="circle column-2" id="circle-9"></div>
+      <div class="circle column-2" id="circle-16"></div>
+      <div class="circle column-2" id="circle-23"></div>
+      <div class="circle column-2" id="circle-30"></div>
+      <div class="circle column-2" id="circle-37"></div>
+    </div>
+    <div class="column" id="column-3" onclick=claim(3)>
+      <div class="circle column-3" id="circle-3"></div>
+      <div class="circle column-3" id="circle-10"></div>
+      <div class="circle column-3" id="circle-17"></div>
+      <div class="circle column-3" id="circle-24"></div>
+      <div class="circle column-3" id="circle-31"></div>
+      <div class="circle column-3" id="circle-38"></div>
+    </div>
+    <div class="column" id="column-4" onclick=claim(4)>
+      <div class="circle column-4" id="circle-4"></div>
+      <div class="circle column-4" id="circle-11"></div>
+      <div class="circle column-4" id="circle-18"></div>
+      <div class="circle column-4" id="circle-25"></div>
+      <div class="circle column-4" id="circle-32"></div>
+      <div class="circle column-4" id="circle-39"></div>
+    </div>
+    <div class="column" id="column-5" onclick=claim(5)>
+      <div class="circle column-5" id="circle-5"></div>
+      <div class="circle column-5" id="circle-12"></div>
+      <div class="circle column-5" id="circle-19"></div>
+      <div class="circle column-5" id="circle-26"></div>
+      <div class="circle column-5" id="circle-33"></div>
+      <div class="circle column-5" id="circle-40"></div>
+    </div>
+    <div class="column" id="column-6" onclick=claim(6)>
+      <div class="circle column-6" id="circle-6"></div>
+      <div class="circle column-6" id="circle-13"></div>
+      <div class="circle column-6" id="circle-20"></div>
+      <div class="circle column-6" id="circle-27"></div>
+      <div class="circle column-6" id="circle-34"></div>
+      <div class="circle column-6" id="circle-41"></div>
+    </div>
+    <div class="column" id="column-7" onclick=claim(7)>
+      <div class="circle column-7" id="circle-7"></div>
+      <div class="circle column-7" id="circle-14"></div>
+      <div class="circle column-7" id="circle-21"></div>
+      <div class="circle column-7" id="circle-28"></div>
+      <div class="circle column-7" id="circle-35"></div>
+      <div class="circle column-7" id="circle-42"></div>
+    </div>
+  </div>
+</body>
+</html>
