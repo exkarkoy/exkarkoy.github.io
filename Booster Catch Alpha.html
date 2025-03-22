@@ -1,0 +1,594 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Booster Catcher</title>
+    <style>
+        /* Base styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            overflow: hidden;
+            font-family: 'Arial', sans-serif;
+        }
+
+        /* Game container */
+        #gameContainer {
+            width: 100vw;
+            height: 100vh;
+            background: linear-gradient(180deg, #4ebbf1 0%,  #e85e5e 100%);
+            position: relative;
+        }
+
+        /* Title styling */
+        .title {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            color: white;
+            font-size: 14px;
+            font-weight: bold;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            z-index: 10;
+        }
+
+        /* Launch pad styling */
+        .launchPad {
+            position: absolute;
+            bottom: 150px;
+            left: 50%;
+            width: 50px;
+            height: 400px;
+            background: #555;
+            transform: translateX(-50%);
+        }
+
+        /* Pad pattern */
+        .padPattern {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: repeating-linear-gradient(
+                -45deg,
+                transparent 0,
+                transparent 10px,
+                #ffffffef 10px,
+                #ffffff22 20px
+            );
+        }
+
+        /* Mechanical arms */
+        .arm {
+            position: absolute;
+            width: 150px;
+            height: 15px;
+            background: linear-gradient(90deg, #666, #aa8);
+            right: -130px;
+            transform-origin: left center;
+            transition: transform 0.2s ease;
+            border-radius: 3px;
+        }
+
+        .arm.top {
+            top: 150px;
+            transform: rotate(-25deg);
+        }
+
+        .arm.bottom {
+            top: 200px;
+            transform: rotate(25deg);
+        }
+
+        .arm.closing.top { transform: rotate(0deg); }
+        .arm.closing.bottom { transform: rotate(0deg); }
+
+        /* Booster styling */
+        .booster {
+            position: absolute;
+            width: 20px;
+            height: 90px;
+            background: linear-gradient(90deg, #888888, #bbbbbb);
+            top: -100px;
+            left: calc(50% + 80px);
+            transform: rotate(15deg);
+            border-radius: 5px;
+        }
+
+        .boosterStripe {
+            position: absolute;
+            width: 100%;
+            height: 20px;
+            background: white;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+
+        .flame {
+            position: absolute;
+            bottom: -80px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 20px;
+            height: 50px;
+            animation: flicker 0.1s infinite alternate;
+        }
+
+        .flame::before {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(0deg, #ff4d4d, #ebb154);
+            clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
+        }
+
+        @keyframes flicker {
+            0% { transform: translateX(-50%) scale(1, 1); }
+            100% { transform: translateX(-50%) scale(0.9, 1.1); }
+        }
+
+        /* Steam vapor layer */
+        .vapor-container {
+            position: absolute;
+            bottom: 150px;
+            left: 0;
+            width: 100%;
+            height: 80px;
+            overflow: hidden;
+            z-index: 2;
+        }
+
+        .vapor {
+            position: absolute;
+            bottom: 0;
+            width: 200%;
+            height: 100%;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 100"><path d="M0,50 Q250,0 500,50 T1000,50" fill="none" stroke="rgba(255,255,255,0.3)" stroke-width="120"/></svg>');
+            background-repeat: repeat-x;
+            background-size: 50% 100%;
+            animation: moveVapor 20s linear infinite;
+            opacity: 1;
+        }
+
+        @keyframes moveVapor {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
+
+        /* Info panel */
+        .infoPanel {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            height: 100px;
+            background: #222;
+            color: white;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            font-size: 16px;
+            font-family: 'Courier New', monospace;
+            z-index: 3;
+        }
+
+        .infoPanel div {
+            text-align: center;
+        }
+
+        .infoPanel span {
+            display: block;
+            font-size: 20px;
+            margin-top: 5px;
+            color: #ff758c;
+        }
+
+        /* Game over screen */
+        .gameOver {
+            display: none;
+            position: absolute;
+            top: 40%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0,0,0,0.9);
+            padding: 30px;
+            border-radius: 15px;
+            color: white;
+            text-align: center;
+            z-index: 100;
+            min-width: 300px;
+        }
+
+        /* Ocean */
+        .ocean {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            height: 150px;
+            background: linear-gradient(180deg, #c9904b 0%, #87985e 100%);
+            z-index: 1;
+        }
+
+        /* Sweet spot indicator */
+        .sweetSpot {
+            position: absolute;
+            right: -110px;
+            top: 170px;
+            width: 80px;
+            height: 25px;
+            border: 2px solid rgba(255,255,255,0.3);
+            border-radius: 5px;
+        }
+
+        .button {
+            padding: 15px 30px;
+            background: #ff758c;
+            border: none;
+            border-radius: 8px;
+            color: white;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 20px;
+            transition: background 0.3s;
+        }
+
+        .button:hover {
+            background: #ff8c42;
+        }
+
+        /* New Reset Button Styles */
+        .resetButton {
+            background: #ff4757;
+            margin-left: 10px;
+        }
+
+        .resetButton:hover {
+            background: #ff6b81;
+        }
+
+        .leaderboard {
+            position: absolute;
+            right: 20px;
+            top: 20px;
+            background: rgba(0,0,0,0.7);
+            padding: 20px;
+            border-radius: 10px;
+            color: white;
+            min-width: 200px;
+        }
+
+        .leaderboard h3 {
+            margin-bottom: 10px;
+            text-align: center;
+        }
+
+        #leaderboardList div {
+            margin: 5px 0;
+            padding: 5px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+
+        /* Points animation */
+        .points-popup {
+            position: absolute;
+            color: white;
+            font-size: 24px;
+            font-weight: bold;
+            pointer-events: none;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+            z-index: 100;
+        }
+
+        @keyframes floatUp {
+            0% { transform: translateY(0); opacity: 1; }
+            100% { transform: translateY(-100px); opacity: 0; }
+        }
+    </style>
+</head>
+<body>
+    <div id="gameContainer">
+        <div class="title">ROCKET BOOSTER CATCH - It Is Possible!</div>
+        <div class="ocean"></div>
+        <div class="vapor-container">
+            <div class="vapor"></div>
+        </div>
+        <div class="launchPad">
+            <div class="padPattern"></div>
+            <div class="arm top"></div>
+            <div class="arm bottom"></div>
+            <div class="sweetSpot"></div>
+        </div>
+        <div class="booster">
+            <div class="boosterStripe"></div>
+            <div class="flame"></div>
+        </div>
+        <div class="infoPanel">
+            <div>SPEED<span id="speed">0</span>KM/H</div>
+            <div>ALTITUDE<span id="altitude">100</span>KM</div>
+            <div>T-<span id="countdown">10</span>s</div>
+            <div>SCORE<span id="score">0</span></div>
+            <div>HIGH SCORE<span id="highScore">0</span></div>
+        </div>
+        <div class="gameOver">
+            <h2>Game Over</h2>
+            <p>Score: <span class="finalScore">0</span></p>
+            <p>High Score: <span class="finalHighScore">0</span></p>
+            <button class="button" onclick="restartGame()">Try Again</button>
+            <button class="button resetButton" onclick="resetHighScore()">Reset High Score</button>
+        </div>
+        <div class="leaderboard">
+            <h3>Top Scores</h3>
+            <div id="leaderboardList"></div>
+        </div>
+    </div>
+    <script>
+        // Game state variables
+        let gameState = {
+            score: 0,
+            highScore: parseInt(localStorage.getItem('highScore')) || 0,
+            baseSpeed: 1,
+            currentSpeed: 1,
+            isActive: true,
+            boosterPosition: -100,
+            isArmsClosing: false,
+            difficulty: 1,
+            gravitationalAcceleration: 0.2
+        };
+
+        // DOM Elements
+        const elements = {
+            booster: document.querySelector('.booster'),
+            arms: document.querySelectorAll('.arm'),
+            container: document.querySelector('#gameContainer'),
+            gameOver: document.querySelector('.gameOver'),
+            sweetSpot: document.querySelector('.sweetSpot')
+        };
+
+        // Initialize game
+        function initGame() {
+            updateScoreDisplay();
+            updateLeaderboard();
+            resetBooster();
+            gameState.isActive = true;
+            gameState.score = 0;
+            gameState.currentSpeed = gameState.baseSpeed;
+            gameState.difficulty = 1;
+            elements.gameOver.style.display = 'none';
+        }
+
+        // Reset booster position
+        function resetBooster() {
+            gameState.boosterPosition = -100;
+            elements.booster.style.top = gameState.boosterPosition + 'px';
+            gameState.currentSpeed = gameState.baseSpeed * gameState.difficulty;
+        }
+
+        // New Reset High Score Function
+        function resetHighScore() {
+            if (confirm('Are you sure you want to reset the high score?')) {
+                gameState.highScore = 0;
+                localStorage.removeItem('highScore');
+                localStorage.removeItem('leaderboard'); // Also clear the leaderboard
+                updateScoreDisplay();
+                updateLeaderboard();
+                alert('High score has been reset!');
+            }
+        }
+
+        // Update displays
+        function updateScoreDisplay() {
+            document.getElementById('score').textContent = gameState.score;
+            document.getElementById('highScore').textContent = gameState.highScore;
+        }
+
+        // Create points popup
+        function showPointsAnimation(points, perfect) {
+            const popup = document.createElement('div');
+            popup.className = 'points-popup';
+            popup.textContent = perfect ? `PERFECT! +${points}` : `+${points}`;
+            popup.style.color = perfect ? '#FFD700' : 'white';
+            popup.style.left = `${elements.booster.offsetLeft}px`;
+            popup.style.top = `${elements.booster.offsetTop}px`;
+            elements.container.appendChild(popup);
+
+            popup.style.animation = 'floatUp 1s ease-out forwards';
+            setTimeout(() => popup.remove(), 1500);
+        }
+
+        // Handle booster movement
+        function moveBooster() {
+            if (!gameState.isActive) return;
+
+            gameState.currentSpeed += gameState.gravitationalAcceleration;
+            gameState.boosterPosition += gameState.currentSpeed;
+            elements.booster.style.top = `${gameState.boosterPosition}px`;
+
+            const height = elements.container.offsetHeight;
+            const speed = Math.round(gameState.currentSpeed * 50);
+            const altitude = Math.max(0, Math.round(100 - (gameState.boosterPosition / height) * 100));
+            const timeToImpact = Math.max(0, Math.round((height - gameState.boosterPosition - 250) / (gameState.currentSpeed * 60)));
+
+            document.getElementById('speed').textContent = speed;
+            document.getElementById('altitude').textContent = altitude;
+            document.getElementById('countdown').textContent = timeToImpact;
+
+            const boosterRect = elements.booster.getBoundingClientRect();
+            const sweetSpotRect = elements.sweetSpot.getBoundingClientRect();
+
+            if (gameState.isArmsClosing && 
+                boosterRect.bottom > sweetSpotRect.top &&
+                boosterRect.top < sweetSpotRect.bottom) {
+                const perfectCatch = 
+                    boosterRect.top + boosterRect.height/2 >= sweetSpotRect.top &&
+                    boosterRect.top + boosterRect.height/2 <= sweetSpotRect.bottom;
+                handleCatch(perfectCatch);
+            } else if (gameState.boosterPosition > height - 250) {
+                handleMiss();
+            }
+        }
+
+        // Handle successful catch
+        function handleCatch(isPerfect) {
+            gameState.isActive = false;
+            const points = isPerfect ? 200 : 100;
+            gameState.score += points;
+            createParticles(true);
+            showPointsAnimation(points, isPerfect);
+            
+            setTimeout(() => {
+                resetBooster();
+                gameState.isActive = true;
+                gameState.difficulty += 0.1;
+            }, 1000);
+
+            updateScoreDisplay();
+        }
+
+        // Handle miss
+        function handleMiss() {
+            gameState.isActive = false;
+            createParticles(false);
+            shakeScreen();
+            
+            setTimeout(() => {
+                if (gameState.score > gameState.highScore) {
+                    gameState.highScore = gameState.score;
+                    localStorage.setItem('highScore', gameState.highScore);
+                    const name = prompt('New High Score! Enter your name:');
+                    saveToLeaderboard(name, gameState.score);
+                }
+                showGameOver();
+            }, 1000);
+        }
+
+        // Particle system
+        function createParticles(success) {
+            const colors = success ? ['#FFD700', '#FFA500', '#FF4500'] : 
+                                   ['#FF0000', '#FF4500', '#FFA500'];
+            const particleCount = success ? 30 : 50;
+            const boosterPos = elements.booster.getBoundingClientRect();
+
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.background = colors[Math.floor(Math.random() * colors.length)];
+                particle.style.width = success ? '5px' : '8px';
+                particle.style.height = success ? '5px' : '8px';
+                particle.style.borderRadius = '50%';
+                particle.style.position = 'absolute';
+                particle.style.left = `${boosterPos.left + boosterPos.width/2}px`;
+                particle.style.top = `${boosterPos.top + boosterPos.height/2}px`;
+
+                elements.container.appendChild(particle);
+
+                const angle = (Math.random() * Math.PI * 2);
+                const velocity = success ? Math.random() * 5 + 2 : Math.random() * 8 + 4;
+                const vx = Math.cos(angle) * velocity;
+                const vy = Math.sin(angle) * velocity;
+                
+                let opacity = 1;
+                let time = 0;
+
+                function animateParticle() {
+                    time += 1/60;
+                    opacity -= 0.02;
+                    particle.style.opacity = opacity;
+                    
+                    const x = boosterPos.left + boosterPos.width/2 + (vx * time * 60);
+                    const y = boosterPos.top + boosterPos.height/2 + 
+                             (vy * time * 60) + 
+                             (success ? 0 : 2 * time * time * 60);
+                    
+                    particle.style.transform = `translate(${x}px, ${y}px)`;
+
+                    if (opacity > 0) {
+                        requestAnimationFrame(animateParticle);
+                    } else {
+                        particle.remove();
+                    }
+                }
+
+                requestAnimationFrame(animateParticle);
+            }
+        }
+
+        // Screen shake effect
+        function shakeScreen() {
+            let intensity = 20;
+            const originalTransform = elements.container.style.transform;
+
+            function shake() {
+                if (intensity <= 0) {
+                    elements.container.style.transform = originalTransform;
+                    return;
+                }
+                
+                const xShake = (Math.random() - 0.5) * intensity;
+                const yShake = (Math.random() - 0.5) * intensity;
+                elements.container.style.transform = `translate(${xShake}px, ${yShake}px)`;
+                intensity *= 0.9;
+                requestAnimationFrame(shake);
+            }
+
+            shake();
+        }
+
+        // Game over handling
+        function showGameOver() {
+            elements.gameOver.style.display = 'block';
+            elements.gameOver.querySelector('.finalScore').textContent = gameState.score;
+            elements.gameOver.querySelector('.finalHighScore').textContent = gameState.highScore;
+        }
+
+        // Restart game
+        function restartGame() {
+            initGame();
+        }
+
+        // Leaderboard functions
+        function saveToLeaderboard(name, score) {
+            if (!name) name = 'Anonymous';
+            const leaderboard = JSON.parse(localStorage.getItem('leaderboard') || '[]');
+            leaderboard.push({ name, score, date: Date.now() });
+            leaderboard.sort((a, b) => b.score - a.score);
+            leaderboard.splice(5); // Keep top 5
+            localStorage.setItem('leaderboard', JSON.stringify(leaderboard));
+            updateLeaderboard();
+        }
+
+        function updateLeaderboard() {
+            const leaderboard = JSON.parse(localStorage.getItem('leaderboard') || '[]');
+            const list = document.getElementById('leaderboardList');
+            list.innerHTML = leaderboard
+                .map((entry, i) => `<div>${i+1}. ${entry.name}: ${entry.score}</div>`)
+                .join('');
+        }
+
+        // Event listeners
+        document.addEventListener('keydown', (e) => {
+            if (e.code === 'Space' && !gameState.isArmsClosing && gameState.isActive) {
+                e.preventDefault(); // Prevent page scrolling
+                gameState.isArmsClosing = true;
+                elements.arms.forEach(arm => arm.classList.add('closing'));
+                
+                setTimeout(() => {
+                    elements.arms.forEach(arm => arm.classList.remove('closing'));
+                    gameState.isArmsClosing = false;
+                }, 700);
+            }
+        });
+
+        // Start game
+        initGame();
+        gameLoop();
+
+        function gameLoop() {
+            if (gameState.isActive) moveBooster();
+            requestAnimationFrame(gameLoop);
+        }
+    </script>
+</body>
+</html>
